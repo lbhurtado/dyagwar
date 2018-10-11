@@ -7,16 +7,11 @@ use Tests\TestCase;
 
 class ExampleTest extends TestCase
 {
-    /**
-     * A basic test example.
-     *
-     * @return void
-     */
     public function testBasicTest()
     {
         $this->bot
-            ->receives('Hi')
-            ->assertReply('Hello!');
+            ->receives('test')
+            ->assertReply('It works!');
     }
 
     /**
@@ -45,5 +40,14 @@ class ExampleTest extends TestCase
             ->assertQuestion('Huh - you woke me up. What do you need?')
             ->receivesInteractiveMessage('quote')
             ->assertReplyIn($quotes);
+    }
+
+    /** @test */
+    public function register_code_keyword()
+    {
+        $this->bot
+            ->receives('survey')
+            // ->assertReply('1) picture')
+            ;
     }
 }
