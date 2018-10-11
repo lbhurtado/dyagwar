@@ -155,18 +155,18 @@ return [
          * BotMan Service Providers...
          */
         BotMan\Tinker\TinkerServiceProvider::class,
-        App\Providers\BotMan\DriverServiceProvider::class,
+        Dyagwar\Providers\BotMan\DriverServiceProvider::class,
         BotMan\BotMan\BotManServiceProvider::class,
         BotMan\Studio\Providers\StudioServiceProvider::class,
 
         /*
          * Application Service Providers...
          */
-        App\Providers\AppServiceProvider::class,
-        App\Providers\AuthServiceProvider::class,
-        // App\Providers\BroadcastServiceProvider::class,
-        App\Providers\EventServiceProvider::class,
-        App\Providers\RouteServiceProvider::class,
+        Dyagwar\Providers\AppServiceProvider::class,
+        Dyagwar\Providers\AuthServiceProvider::class,
+        // Dyagwar\Providers\BroadcastServiceProvider::class,
+        Dyagwar\Providers\EventServiceProvider::class,
+        Dyagwar\Providers\RouteServiceProvider::class,
 
     ],
 

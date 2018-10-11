@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace Dyagwar\Http\Controllers;
 
 use BotMan\BotMan\BotMan;
 use Illuminate\Http\Request;
-use App\Conversations\ExampleConversation;
+use Dyagwar\Conversations\ExampleConversation;
 
 class BotManController extends Controller
 {

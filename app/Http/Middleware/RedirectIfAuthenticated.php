@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Middleware;
+namespace Dyagwar\Http\Middleware;
 
 use Closure;
 use Illuminate\Support\Facades\Auth;

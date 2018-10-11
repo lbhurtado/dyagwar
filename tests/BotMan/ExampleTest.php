@@ -43,11 +43,29 @@ class ExampleTest extends TestCase
     }
 
     /** @test */
-    public function register_code_keyword()
+    public function bot_keyword_help()
     {
         $this->bot
-            ->receives('survey')
-            // ->assertReply('1) picture')
+            ->receives('help')
+            ->assertReply('These are the commands:')
+            ;
+    }
+
+    /** @test */
+    public function bot_keyword_stop()
+    {
+        $this->bot
+            ->receives('stop')
+            ->assertReply('break, break...')
+            ;
+    }
+
+    /** @test */
+    public function bot_keyword_info()
+    {
+        $this->bot
+            ->receives('info')
+            ->assertReply('The quick brown fox...')
             ;
     }
 }
