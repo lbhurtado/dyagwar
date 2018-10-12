@@ -1,7 +1,7 @@
 <?php
 
 use Dyagwar\Http\Controllers\BotManController;
-use Dyagwar\Domain\Controllers\CommonController;
+use Dyagwar\Domain\Controllers\{CommonController, UserController};
 
 $botman = resolve('botman');
 
@@ -17,31 +17,31 @@ $botman->hears('stop|/stop|\s', CommonController::class.'@stop')->stopsConversat
 
 $botman->hears('info|/info|\?', CommonController::class.'@info');
 
-$botman->hears('join|/join', function ($bot) {
-    $bot->reply('TBD: join the campaign, register mobile number');
-});
+$botman->hears('join|/join', UserController::class.'@join');
 
-$shareItems = collect([
-        'picture',
-        'video',
-        'audio',
-        'location',
-        'file',
-        'intel',
-]);
+// $shareItems = collect([
+//         'picture',
+//         'video',
+//         'audio',
+//         'location',
+//         'file',
+//         'intel',
+// ]);
 
-$botman->hears('share|/share', function ($bot) use ($shareItems) {
-	$keywords = $shareItems->map(function ($item, $key) { 
-		$index = (int) $key + 1;
+$botman->hears('share|/share', UserController::class.'@share');
 
-		return $index .') '.$item;
-	})->implode("\n");
+// $botman->hears('share|/share', function ($bot) use ($shareItems) {
+// 	$keywords = $shareItems->map(function ($item, $key) { 
+// 		$index = (int) $key + 1;
 
-    $bot->ask($keywords, function ($answer, $conversation) use ($shareItems) {
-    	$index = $answer->getText() - 1;
-    	$conversation->say('Nice of you to share ' . $shareItems[$index]);
-    });
-});
+// 		return $index .') '.$item;
+// 	})->implode("\n");
+
+//     $bot->ask($keywords, function ($answer, $conversation) use ($shareItems) {
+//     	$index = $answer->getText() - 1;
+//     	$conversation->say('Nice of you to share ' . $shareItems[$index]);
+//     });
+// });
 
 $subscribeItems = collect([
         'news',

@@ -2,8 +2,11 @@
 
 namespace Tests\BotMan;
 
-use Illuminate\Foundation\Inspiring;
+
 use Tests\TestCase;
+use Illuminate\Foundation\Inspiring;
+use BotMan\BotMan\Messages\Outgoing\Question;
+use BotMan\BotMan\Messages\Outgoing\OutgoingMessage;
 
 class ExampleTest extends TestCase
 {
@@ -66,6 +69,30 @@ class ExampleTest extends TestCase
         $this->bot
             ->receives('info')
             ->assertReply('The quick brown fox...')
+            ;
+    }
+
+
+    /** @test */
+    public function bot_keyword_join()
+    {
+        $this->bot
+            ->receives('join')
+            ->assertReply('Onboarding...')
+            ;
+    }
+
+    /** @test */
+    public function bot_keyword_share()
+    {
+        $outgoing = new OutgoingMessage('Please upload an audio file.');
+
+        $this->bot
+            ->receives('share')
+            ->assertTemplate(Question::class)
+            ->receives('3')
+            ->assertTemplate(OutgoingMessage::class)
+            ->receivesAudio()
             ;
     }
 }
