@@ -90,9 +90,9 @@ class ExampleTest extends TestCase
         $this->bot
             ->receives('share')
             ->assertTemplate(Question::class)
-            ->receives('3')
+            ->receives('2')
             ->assertTemplate(OutgoingMessage::class)
-            ->receivesAudio()
+            ->receivesVideos()
             ;
     }
 }

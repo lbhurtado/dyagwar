@@ -16,10 +16,14 @@ class ShareConversation extends Conversation
 	        'video',
 	        'audio',
 	        'location',
-	        'file',
-	        'intel',
+	        // 'file',
+	        // 'intel',
 		];
 
+	// protected function setFileSystemRoot()
+	// {
+	// 	config()->set('filesystems.disks.' . config('filesystems.default') . '.root', 'lester');
+	// }
     public function run()
     {
 		$items = collect($this->itemsToShare);
@@ -35,25 +39,35 @@ class ShareConversation extends Conversation
 		$this->ask($question, function (Answer $answer) {
             switch ($answer->getText()) {
                 case '1':
-                    $this->say('Let\'s play Ultra Lotto 6/58!');
+                    return $this->askForImages('Please upload an image.', function ($images) {
+                    	$filename = pathinfo($images[0]->getUrl())['filename'];
+						Storage::put($filename, $images[0]->getUrl());
+    					$this->bot->reply(OutgoingMessage::create('Received image..'));
+                    });
                     break;
                 case '2':
-                    $this->say('Let\'s play Grand Lotto 6/55!');
+            		return $this->askForVideos('Please upload a video file.', function ($video) {
+            			$filename = pathinfo($video[0]->getUrl())['filename'];
+            			Storage::put($filename, $video[0]->getUrl());
+        				$this->bot->reply(OutgoingMessage::create('Received video...'));
+    				});
                     break;
                 case '3':
-
             		return $this->askForAudio('Please upload an audio file.', function ($audio) {
-            			Storage::disk('local')->put('test_audio.mp3', $audio[0]->getUrl());
-        				$this->bot->reply(OutgoingMessage::create('Received audio...')
-        					->withAttachment($audio[0]));
+            			$filename = pathinfo($audio[0]->getUrl())['filename'];
+            			Storage::put($filename, $audio[0]->getUrl());
+        				$this->bot->reply(OutgoingMessage::create('Received audio...'));
     				});
                     break;
                 case '4':
-                    $this->say('Let\'s play Mega Lotto 6/45!');
+					return $this->askForLocation('Please tell me your location.', function (Location $location) {
+    				
+    					$this->bot->reply(OutgoingMessage::create('Received location...'));
+    				});
                     break;
-                case '5':
-                    $this->say('Let\'s play Lotto 6/42!');
-                    break;
+                // case '5':
+                //     $this->say('Let\'s play Lotto 6/42!');
+                //     break;
                 default:
                     $this->say('I am not sure what you meant. Can you try again?');
                     return $this->repeat();

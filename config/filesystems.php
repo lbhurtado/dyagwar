@@ -64,6 +64,15 @@ return [
             'url' => env('AWS_URL'),
         ],
 
+        'do' => [
+            'driver' => 's3',
+            'key' => env('DO_SPACE_KEY'),
+            'secret' => env('DO_SPACE_SECRET'),
+            'region' => 'sgp1',
+            'bucket' => 'dyagwar',
+            'endpoint' => 'https://sgp1.digitaloceanspaces.com',
+            'root' => 'user'
+        ],
     ],
 
 ];
