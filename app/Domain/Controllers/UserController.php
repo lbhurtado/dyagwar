@@ -4,14 +4,24 @@ namespace Dyagwar\Domain\Controllers;
 
 use BotMan\BotMan\BotMan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Dyagwar\Http\Controllers\Controller;
-use Dyagwar\Domain\Conversations\ShareConversation;
+use Dyagwar\Domain\Conversations\{ ShareConversation, WatchConversation };
 
 class UserController extends Controller
 {
+	public function __construct()
+	{
+        Collection::macro('numberize', function () {
+            return $this->map(function ($item, $key) { 
+                return $key+1 . ') ' . $item;
+            })->implode("\n");
+        });
+	}
+
     public function join(BotMan $bot)
     {
-		$bot->reply('Onboarding...');
+		$bot->reply(trans('onboarding.welcome'));
     }
 
     public function share(BotMan $bot)
@@ -22,9 +32,9 @@ class UserController extends Controller
     public function subscribe(BotMan $bot)
     {
 		$subscribeItems = collect([
-		        'news',
-		        'blog',
-		        'bulletin',
+	        'news',
+	        'blog',
+	        'bulletin',
 		]);
 
 		$keywords = $subscribeItems->map(function ($item, $key) { 
@@ -35,7 +45,8 @@ class UserController extends Controller
 
 	    $bot->ask($keywords, function ($answer, $conversation) use ($subscribeItems) {
 	    	$index = $answer->getText() - 1;
-	    	$conversation->say('TBD: Nice of you to subscribe to ' . $subscribeItems[$index] . '.');
+	    	$item = $subscribeItems[$index];
+	    	$conversation->say(trans('subscription.welcome', compact('item')));
 	    });
     }
 
@@ -55,7 +66,8 @@ class UserController extends Controller
 
 	    $bot->ask($keywords, function ($answer, $conversation) use ($surveyItems) {
 	    	$index = $answer->getText() - 1;
-	    	$conversation->say('TBD: Nice of you to participate in ' . $surveyItems[$index] . ' survey.');
+	    	$item = $surveyItems[$index];
+	    	$conversation->say(trans('survey.welcome', compact('item')));
 	    });
     }
 
@@ -76,30 +88,50 @@ class UserController extends Controller
 
 	    $bot->ask($keywords, function ($answer, $conversation) use ($updateItems) {
 	    	$index = $answer->getText() - 1;
-	    	$conversation->say('TBD: Nice of you to update your ' . $updateItems[$index] . ' data.');
+	    	$item = $updateItems[$index];
+	    	$conversation->say(trans('update.gratitude', compact('item')));
 	    });
     }
 
-    public function watcher(BotMan $bot)
+    public function volunteer(BotMan $bot)
     {
-		$watcherTasks = collect([
-		        'task1.preparation',
-		        'task2.precinct',
-		        'task3.pcos',
-		        'task4.casting',
-		        'task5.printing',
-		        'task6.pollcount',
-		]);
+		$bot->reply(trans('watcher.welcome'));
+    }
 
-		$keywords = $watcherTasks->map(function ($item, $key) { 
-			$index = (int) $key + 1;
+    public function watch(BotMan $bot)
+    {
+    	$bot->startConversation(new WatchConversation());
+    }
 
-			return $index .') '.$item;
-		})->implode("\n");
-
-	    $bot->ask($keywords, function ($answer, $conversation) use ($watcherTasks) {
-	    	$index = $answer->getText() - 1;
-	    	$conversation->say('TBD: Poll Watcher Task ' . $watcherTasks[$index]);
+    public function send(BotMan $bot)
+    {
+	    $bot->ask('What is your message?', function ($answer, $conversation) {
+	    	$message = $answer->getText();
+	    	$conversation->ask('To whom?', function ($answer, $conversation) use ($message) {
+	  			$username = $answer->getText();
+	  			$conversation->say('sending "' . $message . '" to ' . $username);
+	    	});
 	    });
     }
+
+	public function broadcast(BotMan $bot)
+	{
+	    $bot->ask('What is your message?', function ($answer, $conversation) {
+	    	$message = $answer->getText();
+	    	$conversation->ask('To which group?', function ($answer, $conversation) use ($message) {
+	  			$groupname = $answer->getText();
+	  			$conversation->say('sending "' . $message . '" to ' . $groupname);
+	    	});
+	    });
+	}
+
+	public function strength(BotMan $bot)
+	{
+	    $bot->reply('TBD: statistics of campaign');
+	}
+
+	public function votes(BotMan $bot)
+	{
+    	$bot->reply('TBD: votes of precinct, clustered precinct, voting center, barangay, municipality');
+	}
 }

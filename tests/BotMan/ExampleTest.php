@@ -4,12 +4,25 @@ namespace Tests\BotMan;
 
 
 use Tests\TestCase;
+use Illuminate\Support\Collection;
 use Illuminate\Foundation\Inspiring;
 use BotMan\BotMan\Messages\Outgoing\Question;
 use BotMan\BotMan\Messages\Outgoing\OutgoingMessage;
 
 class ExampleTest extends TestCase
 {
+    public function setUp()
+    {
+        parent::setUp();
+
+        Collection::macro('numberize', function () {
+            $i = 1;
+            return $this->map(function ($item, $key) use (&$i) { 
+                return $i++ . ') ' . $key;
+            })->implode("\n");
+        });
+    }
+
     public function testBasicTest()
     {
         $this->bot
@@ -39,7 +52,7 @@ class ExampleTest extends TestCase
         ];
 
         $this->bot
-            ->receives('Start Conversation')
+            ->receives('icebreaker')
             ->assertQuestion('Huh - you woke me up. What do you need?')
             ->receivesInteractiveMessage('quote')
             ->assertReplyIn($quotes);
@@ -78,7 +91,7 @@ class ExampleTest extends TestCase
     {
         $this->bot
             ->receives('join')
-            ->assertReply('Onboarding...')
+            ->assertReply('Thank you for joining the campaign.')
             ;
     }
 
@@ -87,12 +100,27 @@ class ExampleTest extends TestCase
     {
         $outgoing = new OutgoingMessage('Please upload an audio file.');
 
+
+
         $this->bot
             ->receives('share')
             ->assertTemplate(Question::class)
             ->receives('2')
             ->assertTemplate(OutgoingMessage::class)
             ->receivesVideos()
+            ;
+    }
+
+    /** @test */
+    public function bot_keyword_watch()
+    {
+
+        $this->bot
+            ->receives('watch')
+            ->assertTemplate(Question::class)
+            ->receives('2')
+            ->assertTemplate(Question::class)
+            ->receives('2')
             ;
     }
 }
